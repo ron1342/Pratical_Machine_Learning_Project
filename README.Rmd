@@ -1,4 +1,11 @@
-# Pratical_Machine_Learning_Project
+---
+title: "READEME"
+author: "Ronald Armando"
+date: "4/25/2018"
+output: html_document
+---
+
+# Practical Machine Learning Project
 
 ## Background
 
