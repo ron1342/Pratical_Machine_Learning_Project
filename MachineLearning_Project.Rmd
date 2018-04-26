@@ -20,11 +20,7 @@ The test data are available here:
 
 https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
 
-The data for this project come from http://groupware.les.inf.puc-rio.br/har. Full source:
-
-Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. “Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13)”. Stuttgart, Germany: ACM SIGCHI, 2013.
-
-My special thanks to the above mentioned authors for being so generous in allowing their data to be used for this kind of assignment.
+The data for this project can be found here: http://groupware.les.inf.puc-rio.br/har.
 
 A short description of the datasets content from the authors’ website:
 
@@ -32,19 +28,26 @@ A short description of the datasets content from the authors’ website:
 
 Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes. Participants were supervised by an experienced weight lifter to make sure the execution complied to the manner they were supposed to simulate. The exercises were performed by six male participants aged between 20-28 years, with little weight lifting experience. We made sure that all participants could easily simulate the mistakes in a safe and controlled manner by using a relatively light dumbbell (1.25kg)."
 
-## Environment Preparation
+## Getting and loading the data
 We first upload the R libraries that are necessary for the complete analysis.
 
 ```{r}
-rm(list=ls())                # free up memory for the download of the data sets
-setwd("~/Cursos/Data Science/08 Practical Machine Learning/Projeto")
+rm(list=ls())               
 library(knitr)
 library(caret)
+library(randomForest)
+library(corrplot)
 library(rpart)
 library(rpart.plot)
 library(rattle)
-library(randomForest)
-library(corrplot)
+
+
 set.seed(12345)
-``
+
+train_Url <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+test_Url <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+training <- read.csv(url(train_Url), na.strings=c("NA","#DIV/0!",""))
+testing <- read.csv(url(test_Url), na.strings=c("NA","#DIV/0!",""))
+```
 
