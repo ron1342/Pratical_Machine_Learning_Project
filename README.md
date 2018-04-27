@@ -6,7 +6,7 @@ Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible t
 
 ## Data
 
-The training data for this project are available here:
+The training data for this project is available here:
 
 https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
 
