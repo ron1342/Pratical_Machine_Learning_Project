@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Data Loading
 
 ## Dataset Overview
-The training data for this project is available here:
+The training data for this project are available here:
 
 https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
 
@@ -32,15 +32,15 @@ Class A corresponds to the specified execution of the exercise, while the other 
 We first upload the R libraries that are necessary for the complete analysis.
 
 ```{r}
-rm(list=ls())               
-library(knitr)
+rm(list=ls())  
+
 library(caret)
-library(randomForest)
 library(corrplot)
+library(knitr)
+library(randomForest)
+library(rattle)
 library(rpart)
 library(rpart.plot)
-library(rattle)
-
 
 set.seed(12345)
 
@@ -52,13 +52,14 @@ test_Url <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
 training <- read.csv(url(train_Url), na.strings=c("NA","#DIV/0!",""))
 testing <- read.csv(url(test_Url), na.strings=c("NA","#DIV/0!",""))
 
-# Create a partition with the training dataset - 70% Training Data & 30% Test Data
+# Create a partition with the training dataset
+# 70% Training Data & 30% Test Data
 inTrain  <- createDataPartition(training$classe, p=0.7, list=FALSE)
 TrainD <- training[inTrain, ]
 TestD  <- training[-inTrain, ]
 ```
 
-Let's see the dimensions for both training and test sets and have an overview of the dataset
+Let's see the dimensions for both training and test sets and have an overview of the dataset with the str() function
 
 ```{r}
 dim(TrainD)
@@ -68,7 +69,7 @@ str(TrainD)
 ```
 ## Cleaning the data
 
-We can see from the previous step that both datasets have 160 variables, and also it is possible to see that many of those variables have NA values. The Near Zero variance (NZV) variables are also removed and the ID variables as well.
+We can see from the previous step that the datasets have 160 variables, and also that many of their variables have NA values. The Near Zero variance (NZV) variables are also removed and the ID variables as well.
 
 ```{r}
 # Remove variables with Nearly Zero Variance
@@ -114,7 +115,7 @@ The highly correlated variables are shown in dark colors in the graph above: blu
 # Prediction Model Building
 
 Three methods will be applied to model the regressions and the best one, with higher accuracy when applied to the Test dataset, will be used for the quiz predictions. 
-The methods are: Random Forests, Decision Tree and Generalized Boosted Model.
+The methods chosen for are: Random Forests, Decision Tree and Generalized Boosted Model.
 At the end of each analysis, a confusion matrix will be plotted to better visualize the accuracy of the each model.
 
 ## Random Forest
@@ -136,10 +137,9 @@ confMatRF
 ```
 
 ```{r}
-# plot matrix results
-plot(confMatRF$table, col = confMatRF$byClass, 
-     main = paste("Random Forest - Accuracy =",
-                  round(confMatRF$overall['Accuracy'], 4)))
+# Plot matrix results
+qplot(classe, predictRF, data=TestD,  colour= classe, geom = c("boxplot", "jitter"), main = paste("Random Forest - Accuracy =", round(confMatRF$overall['Accuracy'], 4)), xlab = "Observation", ylab = "Prediction")
+
 ```
 
 ## Decision Trees
@@ -159,9 +159,7 @@ confMatDT
 
 ```{r}
 # Plot matrix results
-plot(confMatDT$table, col = confMatDT$byClass, 
-     main = paste("Decision Tree - Accuracy =",
-                  round(confMatDT$overall['Accuracy'], 4)))
+qplot(classe, predictDT, data=TestD,  colour= classe, geom = c("boxplot", "jitter"), main = paste("Decision Tree - Accuracy =",round(confMatDT$overall['Accuracy'], 4)), xlab = "Observation", ylab = "Prediction")
 ```
 
 ## Generalized Boosted Model
@@ -182,19 +180,21 @@ confMatGbm
 
 ```{r}
 # Plot matrix results
-plot(confMatGbm$table, col = confMatGbm$byClass, 
-     main = paste("GBM - Accuracy =", round(confMatGbm$overall['Accuracy'], 4)))
+qplot(classe, predictGbm, data=TestD,  colour= classe, geom = c("boxplot", "jitter"), main = paste("GBM - Accuracy =", round(confMatGbm$overall['Accuracy'], 4)), xlab = "Observation", ylab = "Prediction")
+
 ```
+
+
 
 # Applying Best Model to Test Data
 
 The accuracy of the 3 regression modeling methods are:
 
-Random Forest : 0.9964
-Decision Tree : 0.7368
-GBM : 0.9857
+*Random Forest : 0.9964
+*Decision Tree : 0.7368
+*GBM : 0.9857
 
-Random Forest model will be applied to predict the 20 quiz results, as follows:
+Since the Random Forest model had the best accuracy, it will be applied to predict the 20 quiz results, as follows:
 
 ```{r}
 predictTEST <- predict(modFitRF, newdata=testing)
