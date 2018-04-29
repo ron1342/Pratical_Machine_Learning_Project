@@ -2,7 +2,9 @@
 title: "MachineLearning_Project"
 author: "Ronald Armando"
 date: "4/26/2018"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
